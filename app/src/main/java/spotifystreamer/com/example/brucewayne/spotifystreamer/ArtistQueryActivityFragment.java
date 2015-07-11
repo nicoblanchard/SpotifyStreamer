@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.Toast;
@@ -19,14 +18,19 @@ import kaaes.spotify.webapi.android.SpotifyApi;
 import kaaes.spotify.webapi.android.SpotifyService;
 import kaaes.spotify.webapi.android.models.Artist;
 import kaaes.spotify.webapi.android.models.ArtistsPager;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 
 /**
  * A placeholder fragment containing a simple view.
  */
 public class ArtistQueryActivityFragment extends Fragment {
-    ArrayAdapter<Artist> adapter;
+//    List<Artist> arrayList = new ArrayList <Artist>();
+    ArtistAdapter adapter;
     List<Artist> arrayList = new ArrayList <Artist>();
+
     public ArtistQueryActivityFragment() {
     }
 
@@ -37,51 +41,57 @@ public class ArtistQueryActivityFragment extends Fragment {
         //adapter
 
         View rootView = inflater.inflate(R.layout.fragment_artist_query, container, false);
-
-
+        ListView resultsListView = (ListView) rootView.findViewById(R.id.artist_listView);
 
         // Bouton de recherche
-        SearchView artistQuery= (SearchView) rootView.findViewById(R.id.artist_query_searchView);
+        SearchView artistQuery = (SearchView) rootView.findViewById(R.id.artist_query_searchView);
         artistQuery.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                if (!query.isEmpty()){
-                    SpotifyApi api=new SpotifyApi();
+                if (!query.isEmpty()) {
+                    SpotifyApi api = new SpotifyApi();
                     SpotifyService spotify = api.getService();
-                    if (spotify!=null) {
-                             ArtistsPager results = spotify.searchArtists(query);
-                        if (query.isEmpty()){
-                            Toast.makeText(getActivity(),"Can't find this artist",Toast.LENGTH_SHORT);
-                        }else{
-                            for (Artist artistFound : results.artists.items) {
-                                arrayList.add(artistFound);
+                    if (spotify != null) {
+                        spotify.searchArtists(query, new Callback<ArtistsPager>() {
+                            @Override
+                            public void success(ArtistsPager artistsPager, Response response) {
+                                if (artistsPager.artists.total == 0) {
+                                    Toast.makeText(getActivity(), "Selected artist can't be found", Toast.LENGTH_SHORT);
+                                } else {
+                                    for (Artist artistFound : artistsPager.artists.items) {
+                                        arrayList.add(artistFound);
+                                    }
+                                }
                             }
-                        }
-                    }
 
-               }
-                return false;
+                            @Override
+                            public void failure(RetrofitError error) {
+                                Toast.makeText(getActivity(), "Connection Problem", Toast.LENGTH_SHORT);
+
+                            }
+                        });
+                    }
+                }
+                return true;
             }
+
+
             @Override
             public boolean onQueryTextChange(String newText) {
 
                 return false;
             }
         });
-
-        adapter = new ArrayAdapter<Artist>(getActivity(),
-                R.layout.artist_results_listview,
-                R.id.artist_listView,
-                arrayList);
+        adapter = new ArtistAdapter(getActivity().getBaseContext(), arrayList);
         // Creation de la listeView
-        ListView resultsListView = (ListView) rootView.findViewById(R.id.artist_listView);
         resultsListView.setAdapter(adapter);
+     //   System.out.println(arrayList.get(0).name);
+
         resultsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Intent intent = new Intent(getActivity(), Top10TracksActivity.class);
-        startActivity(intent);
-
+                Intent intent = new Intent(getActivity(), Top10TracksActivity.class);
+                startActivity(intent);
             }
         });
         return rootView;
