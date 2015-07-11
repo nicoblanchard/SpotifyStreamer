@@ -50,13 +50,13 @@ public class ArtistQueryActivityFragment extends Fragment {
                     SpotifyService spotify = api.getService();
                     if (spotify!=null) {
                              ArtistsPager results = spotify.searchArtists(query);
-
-  /*                          Toast.makeText(getActivity(),"Can't find this artist",Toast.LENGTH_SHORT);
+                        if (query.isEmpty()){
+                            Toast.makeText(getActivity(),"Can't find this artist",Toast.LENGTH_SHORT);
                         }else{
                             for (Artist artistFound : results.artists.items) {
                                 arrayList.add(artistFound);
                             }
-                        }*/
+                        }
                     }
 
                }
