@@ -1,9 +1,11 @@
-package spotifystreamer.com.example.brucewayne.spotifystreamer;
+package spotifystreamer.com.example.brucewayne.spotifystreamer.Activities;
 
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import spotifystreamer.com.example.brucewayne.spotifystreamer.R;
 
 /**
  * Created by Bruce Wayne on 05/07/2015.

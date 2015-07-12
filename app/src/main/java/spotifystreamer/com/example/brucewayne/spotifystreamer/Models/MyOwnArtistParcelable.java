@@ -1,4 +1,4 @@
-package spotifystreamer.com.example.brucewayne.spotifystreamer;
+package spotifystreamer.com.example.brucewayne.spotifystreamer.Models;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -7,8 +7,8 @@ import android.os.Parcelable;
  * Created by Bruce Wayne on 06/07/2015.
  */
 public class MyOwnArtistParcelable implements Parcelable{
-    String name;
-    String imageURL;
+    public String name;
+    public String imageURL;
 
     public MyOwnArtistParcelable(String name, String imageURL){
         this.name=name;
