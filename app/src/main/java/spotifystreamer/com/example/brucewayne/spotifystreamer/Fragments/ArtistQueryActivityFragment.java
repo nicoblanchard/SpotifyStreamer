@@ -37,9 +37,9 @@ import spotifystreamer.com.example.brucewayne.spotifystreamer.R;
 public class ArtistQueryActivityFragment extends Fragment {
 //    List<Artist> arrayList = new ArrayList <Artist>();
     ArtistAdapter adapter;
-    List<MyOwnArtistParcelable> arrayList;
+    ArrayList <MyOwnArtistParcelable> arrayList;
     private ArtistAdapter artistAdapter;
-
+  //  private ArrayList<MyOwnArtistParcelable> tracksParcelable;
 
     public ArtistQueryActivityFragment() {
     }
@@ -64,7 +64,7 @@ public class ArtistQueryActivityFragment extends Fragment {
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     MyOwnArtistParcelable artistParcelable = (MyOwnArtistParcelable) parent.getItemAtPosition(position);
                     Intent i = new Intent(getActivity(), Top10TracksActivity.class);
-                    i.putExtra("MyOwnArtistParcelable",artistParcelable);
+                    i.putExtra("MyOwnArtistParcelable", artistParcelable);
                     startActivity(i);
                 }
             });
@@ -112,23 +112,28 @@ public class ArtistQueryActivityFragment extends Fragment {
                 return false;
             }
         });
- //      Log.d(getTag(),adapter.data.get(0).name);
-
-        // Creation de la listeView
         return rootView;
     }
     public MyOwnArtistParcelable makeArtistMyOwnArtistParcelable(Artist artist){
         MyOwnArtistParcelable myArtist;
         String artistname=artist.name;
         String image_thumb="";
+        String id=artist.id;
         for (Image i:artist.images){
             if (i.width<=200){
                 image_thumb=i.url;
                 break;
             }
         }
-        myArtist=new MyOwnArtistParcelable(artistname,image_thumb);
+        myArtist=new MyOwnArtistParcelable(artistname,image_thumb, id);
         return myArtist;
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        if (outState != null) {
+            outState.putParcelableArrayList("MyOwnArtistParcelable", arrayList);
+        }
+        super.onSaveInstanceState(outState);
+    }
 }

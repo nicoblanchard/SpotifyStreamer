@@ -9,15 +9,18 @@ import android.os.Parcelable;
 public class MyOwnArtistParcelable implements Parcelable{
     public String name;
     public String imageURL;
+    public String id;
 
-    public MyOwnArtistParcelable(String name, String imageURL){
+    public MyOwnArtistParcelable(String name, String imageURL, String id){
         this.name=name;
         this.imageURL=imageURL;
+        this.id=id;
     }
 
     private MyOwnArtistParcelable(Parcel in){
         name=in.readString();
         imageURL=in.readString();
+        id=in.readString();
     }
 
     @Override
@@ -29,9 +32,10 @@ public class MyOwnArtistParcelable implements Parcelable{
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(name);
         dest.writeString(imageURL);
+        dest.writeString(id);
     }
 
-    public final Parcelable.Creator <MyOwnArtistParcelable> CREATOR= new Parcelable.Creator<MyOwnArtistParcelable>(){
+    public static final Parcelable.Creator <MyOwnArtistParcelable> CREATOR= new Parcelable.Creator<MyOwnArtistParcelable>(){
         @Override
         public MyOwnArtistParcelable createFromParcel(Parcel parcel) {
             return new MyOwnArtistParcelable(parcel);

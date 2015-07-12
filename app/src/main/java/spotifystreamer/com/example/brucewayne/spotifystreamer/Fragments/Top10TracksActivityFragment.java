@@ -12,7 +12,9 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import kaaes.spotify.webapi.android.SpotifyApi;
 import kaaes.spotify.webapi.android.SpotifyService;
@@ -35,7 +37,8 @@ import spotifystreamer.com.example.brucewayne.spotifystreamer.R;
 public class Top10TracksActivityFragment extends Fragment{
     TopTracksAdapter adapter;
     List<MyOwn10TrackParcelable> arrayList;
-
+    final String COUNTRY_KEY = "country";
+    final String COUNTRY_VALUE = "FR";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -47,16 +50,15 @@ public class Top10TracksActivityFragment extends Fragment{
 
              MyOwnArtistParcelable artistFromIntent = intent.getExtras().getParcelable("MyOwnArtistParcelable");
 
-
             if (artistFromIntent!=null){
-            //    artistAdapter = new ArtistAdapter(getActivity().getBaseContext(), new ArrayList<MyOwnArtistParcelable>());
-                SpotifyApi api=new SpotifyApi();
-                SpotifyService spotifyService=api.getService();
-                if (spotifyService!=null){
-                    spotifyService.getArtistTopTrack(artistFromIntent.name, new Callback<Tracks>() {
+                SpotifyApi api = new SpotifyApi();
+                SpotifyService spotify = api.getService();
+                if (spotify!=null){
+                    Map<String, Object> countryMap = new HashMap<>();
+                    countryMap.put(COUNTRY_KEY, COUNTRY_VALUE);
+                    spotify.getArtistTopTrack(artistFromIntent.id, countryMap, new Callback<Tracks>() {
                         @Override
                         public void success(Tracks tracks, Response response) {
-
                                 arrayList.clear();
                                 adapter.clear();
                                 for (Track trackFound : tracks.tracks) {
@@ -65,32 +67,25 @@ public class Top10TracksActivityFragment extends Fragment{
                                 for (MyOwn10TrackParcelable track: arrayList){
                                     adapter.add(track);
                                 }
-
                         }
                         @Override
                         public void failure(RetrofitError error) {
                             Toast.makeText(getActivity(), "Connection Problem", Toast.LENGTH_SHORT).show();
                         }
-                    }) ;
-
-
-                }
-
+                    }) ;                }
             }
-
         }
     }
 
-@Override
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         //adapter
-
         View rootView = inflater.inflate(R.layout.fragment_top10, container, false);
         // Creation de la listeView
         ListView resultsTop10Tracks = (ListView) rootView.findViewById(R.id.top10_listView);
-        //resultsListView.setAdapter(adapter);
+
         if (resultsTop10Tracks != null) {
             resultsTop10Tracks.setAdapter(adapter);
             resultsTop10Tracks.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -117,5 +112,4 @@ public class Top10TracksActivityFragment extends Fragment{
         myTracks=new MyOwn10TrackParcelable(albumName,albumImage, trackName);
         return myTracks;
     }
-
 }
