@@ -53,7 +53,6 @@ public class ArtistQueryActivityFragment extends Fragment {
                 adapter.add(artiste);
             }
         }
-
     }
 
     @Override
@@ -86,8 +85,7 @@ public class ArtistQueryActivityFragment extends Fragment {
                     if (arrayList!=null){
                         arrayList.clear();
                     }
-                    adapter.clear();
-                    SpotifyApi api = new SpotifyApi();
+                   SpotifyApi api = new SpotifyApi();
                     SpotifyService spotify = api.getService();
                     if (spotify != null) {
                         spotify.searchArtists(query, new Callback<ArtistsPager>() {

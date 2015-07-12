@@ -47,12 +47,12 @@ public class Top10TracksActivityFragment extends Fragment{
         super.onCreate(savedInstanceState);
         adapter=new TopTracksAdapter(getActivity().getBaseContext(), new ArrayList<MyOwn10TrackParcelable>());
 
+        // Rotation case
         if (savedInstanceState != null && savedInstanceState.containsKey(Top10TracksActivityFragment.MY_OWN_10TRACK_PARCELABLE_STRING)) {
             arrayList = savedInstanceState.getParcelableArrayList(Top10TracksActivityFragment.MY_OWN_10TRACK_PARCELABLE_STRING);
             for (MyOwn10TrackParcelable track: arrayList){
                 adapter.add(track);
             }
-
         }
 
         Intent intent = getActivity().getIntent();
