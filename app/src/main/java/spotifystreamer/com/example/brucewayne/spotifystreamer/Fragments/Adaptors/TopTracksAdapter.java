@@ -40,19 +40,19 @@ public class TopTracksAdapter extends ArrayAdapter<MyOwn10TrackParcelable> {
                     saver.albumImage = (ImageView) convertView.findViewById(R.id.album_image);
                     saver.trackName = (TextView) convertView.findViewById(R.id.track_name);
                     convertView.setTag(saver);
-                }else {
-                    saver=(ViewSaver) convertView.getTag();
                 }
-                if (saver!=null) {
-                    MyOwn10TrackParcelable myTop10Tracks = data.get(position);
-                    saver.albumName.setText(myTop10Tracks.albumName);
-                    saver.trackName.setText(myTop10Tracks.trackName);
-                    if (myTop10Tracks.albumName.isEmpty()) {
-                        saver.albumImage.setImageResource(R.drawable.empty_image);
-                    } else {
-                        Picasso.with(context).load(myTop10Tracks.albumImage).into(saver.albumImage);
-                    }
-                }
+            }
+        }else {
+            saver=(ViewSaver) convertView.getTag();
+        }
+        if (saver!=null) {
+            MyOwn10TrackParcelable myTop10Tracks = data.get(position);
+            saver.albumName.setText(myTop10Tracks.albumName);
+            saver.trackName.setText(myTop10Tracks.trackName);
+            if (myTop10Tracks.albumName.isEmpty()) {
+                saver.albumImage.setImageResource(R.drawable.empty_image);
+            } else {
+                Picasso.with(context).load(myTop10Tracks.albumImage).into(saver.albumImage);
             }
         }
         return convertView;

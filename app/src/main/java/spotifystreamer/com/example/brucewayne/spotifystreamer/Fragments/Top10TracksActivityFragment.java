@@ -50,6 +50,9 @@ public class Top10TracksActivityFragment extends Fragment{
         // Rotation case
         if (savedInstanceState != null && savedInstanceState.containsKey(Top10TracksActivityFragment.MY_OWN_10TRACK_PARCELABLE_STRING)) {
             arrayList = savedInstanceState.getParcelableArrayList(Top10TracksActivityFragment.MY_OWN_10TRACK_PARCELABLE_STRING);
+            if (arrayList!=null){
+                arrayList.clear();
+            }
             for (MyOwn10TrackParcelable track: arrayList){
                 adapter.add(track);
             }

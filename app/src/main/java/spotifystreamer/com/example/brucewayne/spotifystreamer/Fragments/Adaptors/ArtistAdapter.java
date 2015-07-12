@@ -41,20 +41,21 @@ public class ArtistAdapter extends ArrayAdapter<MyOwnArtistParcelable> {
                     saver.textView = (TextView) convertView.findViewById(R.id.artist_name); // artist name
                     saver.imageView = (ImageView) convertView.findViewById(R.id.artist_imageView); // thumb image
                     convertView.setTag(saver);
-                }else{
-                    saver = (ViewSaver) convertView.getTag();
-                }
-                if (saver!=null) {
-                    MyOwnArtistParcelable myArtist = data.get(position);
-                    saver.textView.setText(myArtist.name);
-                    if (myArtist.imageURL.isEmpty()) {
-                        saver.imageView.setImageResource(R.drawable.empty_image);
-                    } else {
-                        Picasso.with(context).load(myArtist.imageURL).into(saver.imageView);
-                    }
                 }
             }
+        }else {
+            saver = (ViewSaver) convertView.getTag();
         }
+        if (saver!=null) {
+             MyOwnArtistParcelable myArtist = data.get(position);
+             saver.textView.setText(myArtist.name);
+             if (myArtist.imageURL.isEmpty()) {
+                saver.imageView.setImageResource(R.drawable.empty_image);
+             } else {
+                 Picasso.with(context).load(myArtist.imageURL).into(saver.imageView);
+             }
+        }
+
         return convertView;
     }
     private class ViewSaver {
