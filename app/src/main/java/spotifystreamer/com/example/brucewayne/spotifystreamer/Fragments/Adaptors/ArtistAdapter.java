@@ -31,26 +31,34 @@ public class ArtistAdapter extends ArrayAdapter<MyOwnArtistParcelable> {
     @Override
 
     public View getView(int position, View convertView, ViewGroup parent) {
+        ViewSaver saver=null;
         if (convertView == null) {
             LayoutInflater myInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             if (myInflater != null) {
                 convertView = myInflater.inflate(R.layout.artist_results_listview, parent, false);
                 if (convertView != null) {
-                    TextView artistName = (TextView) convertView.findViewById(R.id.artist_name); // artist name
-                    ImageView thumb_image=(ImageView)convertView.findViewById(R.id.artist_imageView); // thumb image
-
-                    MyOwnArtistParcelable myArtist= data.get(position);
-
-                    artistName.setText(myArtist.name);
+                    saver = new ViewSaver();
+                    saver.textView = (TextView) convertView.findViewById(R.id.artist_name); // artist name
+                    saver.imageView = (ImageView) convertView.findViewById(R.id.artist_imageView); // thumb image
+                    convertView.setTag(saver);
+                }else{
+                    saver = (ViewSaver) convertView.getTag();
+                }
+                if (saver!=null) {
+                    MyOwnArtistParcelable myArtist = data.get(position);
+                    saver.textView.setText(myArtist.name);
                     if (myArtist.imageURL.isEmpty()) {
-                        thumb_image.setImageResource(R.drawable.empty_image);
-                    }else{
-                        Picasso.with(context).load(myArtist.imageURL).into(thumb_image);
+                        saver.imageView.setImageResource(R.drawable.empty_image);
+                    } else {
+                        Picasso.with(context).load(myArtist.imageURL).into(saver.imageView);
                     }
                 }
             }
         }
         return convertView;
     }
+    private class ViewSaver {
+        TextView textView;
+        ImageView imageView;
+    }
 }
-

@@ -12,10 +12,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-import kaaes.spotify.webapi.android.models.Artist;
-import kaaes.spotify.webapi.android.models.Image;
 import spotifystreamer.com.example.brucewayne.spotifystreamer.Models.MyOwn10TrackParcelable;
-import spotifystreamer.com.example.brucewayne.spotifystreamer.Models.MyOwnArtistParcelable;
 import spotifystreamer.com.example.brucewayne.spotifystreamer.R;
 
 /**
@@ -33,29 +30,38 @@ public class TopTracksAdapter extends ArrayAdapter<MyOwn10TrackParcelable> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-
+        ViewSaver saver = new ViewSaver();
         if (convertView == null) {
             LayoutInflater myInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             if (myInflater != null) {
                 convertView = myInflater.inflate(R.layout.top10_listview, parent, false);
                 if (convertView != null) {
-                    TextView albumName = (TextView) convertView.findViewById(R.id.album_name); // artist name
-                    ImageView albumImage=(ImageView)convertView.findViewById(R.id.album_image); // thumb image
-                    TextView trackName=(TextView) convertView.findViewById(R.id.track_name); // thumb image
-                    MyOwn10TrackParcelable myTop10Tracks= data.get(position);
-                    albumName.setText(myTop10Tracks.albumName);
-                    trackName.setText(myTop10Tracks.trackName);
-
+                    saver.albumName = (TextView) convertView.findViewById(R.id.album_name);
+                    saver.albumImage = (ImageView) convertView.findViewById(R.id.album_image);
+                    saver.trackName = (TextView) convertView.findViewById(R.id.track_name);
+                    convertView.setTag(saver);
+                }else {
+                    saver=(ViewSaver) convertView.getTag();
+                }
+                if (saver!=null) {
+                    MyOwn10TrackParcelable myTop10Tracks = data.get(position);
+                    saver.albumName.setText(myTop10Tracks.albumName);
+                    saver.trackName.setText(myTop10Tracks.trackName);
                     if (myTop10Tracks.albumName.isEmpty()) {
-                        albumImage.setImageResource(R.drawable.empty_image);
-                    }else{
-                        Picasso.with(context).load(myTop10Tracks.albumImage).into(albumImage);
+                        saver.albumImage.setImageResource(R.drawable.empty_image);
+                    } else {
+                        Picasso.with(context).load(myTop10Tracks.albumImage).into(saver.albumImage);
                     }
                 }
             }
         }
-       return convertView;
+        return convertView;
+    }
+
+    private class ViewSaver {
+        TextView trackName;
+        TextView albumName;
+        ImageView albumImage;
     }
 }
-
 

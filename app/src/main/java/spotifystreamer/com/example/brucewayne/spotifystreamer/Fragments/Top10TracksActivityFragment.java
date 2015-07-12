@@ -3,6 +3,7 @@ package spotifystreamer.com.example.brucewayne.spotifystreamer.Fragments;
 import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,19 +37,28 @@ import spotifystreamer.com.example.brucewayne.spotifystreamer.R;
  */
 public class Top10TracksActivityFragment extends Fragment{
     TopTracksAdapter adapter;
-    List<MyOwn10TrackParcelable> arrayList;
+    ArrayList<MyOwn10TrackParcelable> arrayList;
     final String COUNTRY_KEY = "country";
     final String COUNTRY_VALUE = "FR";
 
+    final static String MY_OWN_10TRACK_PARCELABLE_STRING="MyOwn10TrackParcelable";
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         adapter=new TopTracksAdapter(getActivity().getBaseContext(), new ArrayList<MyOwn10TrackParcelable>());
-        arrayList = new ArrayList <MyOwn10TrackParcelable>();
-        Intent intent = getActivity().getIntent();
-       if (intent!=null){
 
-             MyOwnArtistParcelable artistFromIntent = intent.getExtras().getParcelable("MyOwnArtistParcelable");
+        if (savedInstanceState != null && savedInstanceState.containsKey(Top10TracksActivityFragment.MY_OWN_10TRACK_PARCELABLE_STRING)) {
+            arrayList = savedInstanceState.getParcelableArrayList(Top10TracksActivityFragment.MY_OWN_10TRACK_PARCELABLE_STRING);
+            for (MyOwn10TrackParcelable track: arrayList){
+                adapter.add(track);
+            }
+
+        }
+
+        Intent intent = getActivity().getIntent();
+        if (intent!=null){
+
+             MyOwnArtistParcelable artistFromIntent = intent.getExtras().getParcelable(ArtistQueryActivityFragment.MY_OWN_ARTIST_PARCELABLE_STRING);
 
             if (artistFromIntent!=null){
                 SpotifyApi api = new SpotifyApi();
@@ -59,18 +69,21 @@ public class Top10TracksActivityFragment extends Fragment{
                     spotify.getArtistTopTrack(artistFromIntent.id, countryMap, new Callback<Tracks>() {
                         @Override
                         public void success(Tracks tracks, Response response) {
+                            if (arrayList != null){
                                 arrayList.clear();
-                                adapter.clear();
-                                for (Track trackFound : tracks.tracks) {
-                                    arrayList.add(makeTracksMyOwn10TrackParcelable(trackFound));
-                                }
-                                for (MyOwn10TrackParcelable track: arrayList){
-                                    adapter.add(track);
-                                }
+                            }
+                            adapter.clear();
+                            arrayList = new ArrayList <MyOwn10TrackParcelable>();
+                            for (Track trackFound : tracks.tracks) {
+                                arrayList.add(makeTracksMyOwn10TrackParcelable(trackFound));
+                            }
+                            for (MyOwn10TrackParcelable track: arrayList){
+                                adapter.add(track);
+                            }
                         }
                         @Override
                         public void failure(RetrofitError error) {
-                            Toast.makeText(getActivity(), "Connection Problem", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity(), R.string.Connection_issue, Toast.LENGTH_SHORT).show();
                         }
                     }) ;                }
             }
@@ -81,11 +94,8 @@ public class Top10TracksActivityFragment extends Fragment{
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        //adapter
         View rootView = inflater.inflate(R.layout.fragment_top10, container, false);
-        // Creation de la listeView
         ListView resultsTop10Tracks = (ListView) rootView.findViewById(R.id.top10_listView);
-
         if (resultsTop10Tracks != null) {
             resultsTop10Tracks.setAdapter(adapter);
             resultsTop10Tracks.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -104,12 +114,24 @@ public class Top10TracksActivityFragment extends Fragment{
         String trackName=track.name;
         String albumImage="";
         for (Image i:track.album.images){
-            if (i.width<=200){
+            if (i.width==200){
                 albumImage=i.url;
                 break;
+            }
+            if (i.width<200){
+                albumImage=i.url;
+                continue;
             }
         }
         myTracks=new MyOwn10TrackParcelable(albumName,albumImage, trackName);
         return myTracks;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        if (outState != null) {
+            outState.putParcelableArrayList(MY_OWN_10TRACK_PARCELABLE_STRING, arrayList);
+        }
+        super.onSaveInstanceState(outState);
     }
 }

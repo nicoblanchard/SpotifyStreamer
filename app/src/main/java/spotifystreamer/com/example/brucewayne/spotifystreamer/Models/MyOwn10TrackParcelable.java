@@ -47,27 +47,4 @@ public class MyOwn10TrackParcelable implements Parcelable{
             return new MyOwn10TrackParcelable[size];
         }
     };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }
