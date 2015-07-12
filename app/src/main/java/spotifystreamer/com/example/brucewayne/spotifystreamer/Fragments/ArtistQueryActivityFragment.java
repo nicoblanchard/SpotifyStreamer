@@ -98,6 +98,10 @@ public class ArtistQueryActivityFragment extends Fragment {
                                     for (Artist artistFound : artistsPager.artists.items) {
                                         arrayList.add(makeArtistMyOwnArtistParcelable(artistFound));
                                     }
+                                    if (adapter!=null) {
+                                        adapter.clear();
+                                    }
+
                                     for (MyOwnArtistParcelable artiste : arrayList) {
                                         adapter.add(artiste);
                                     }

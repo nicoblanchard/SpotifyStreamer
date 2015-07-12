@@ -50,13 +50,13 @@ public class Top10TracksActivityFragment extends Fragment{
         // Rotation case
         if (savedInstanceState != null && savedInstanceState.containsKey(Top10TracksActivityFragment.MY_OWN_10TRACK_PARCELABLE_STRING)) {
             arrayList = savedInstanceState.getParcelableArrayList(Top10TracksActivityFragment.MY_OWN_10TRACK_PARCELABLE_STRING);
-            if (arrayList!=null){
-                arrayList.clear();
+            if (adapter!=null) {
+                adapter.clear();
+                for (MyOwn10TrackParcelable track : arrayList) {
+                    adapter.add(track);
+                }
             }
-            for (MyOwn10TrackParcelable track: arrayList){
-                adapter.add(track);
-            }
-        }
+        }else{
 
         Intent intent = getActivity().getIntent();
         if (intent!=null){
@@ -75,10 +75,12 @@ public class Top10TracksActivityFragment extends Fragment{
                             if (arrayList != null){
                                 arrayList.clear();
                             }
-                            adapter.clear();
                             arrayList = new ArrayList <MyOwn10TrackParcelable>();
                             for (Track trackFound : tracks.tracks) {
                                 arrayList.add(makeTracksMyOwn10TrackParcelable(trackFound));
+                            }
+                            if (adapter!=null) {
+                                adapter.clear();
                             }
                             for (MyOwn10TrackParcelable track: arrayList){
                                 adapter.add(track);
@@ -89,6 +91,7 @@ public class Top10TracksActivityFragment extends Fragment{
                             Toast.makeText(getActivity(), R.string.Connection_issue, Toast.LENGTH_SHORT).show();
                         }
                     }) ;                }
+            }
             }
         }
     }
